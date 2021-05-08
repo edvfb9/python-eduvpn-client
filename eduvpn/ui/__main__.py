@@ -95,4 +95,5 @@ def letsconnect(args=None):
 
 
 if __name__ == '__main__':
+    logger.info("Test print")
     eduvpn()
