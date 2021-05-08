@@ -116,6 +116,7 @@ def list_profiles(oauth: OAuth2Session, api_base_uri: str):
 
 
 def create_keypair(oauth: OAuth2Session, api_base_uri: str) -> Tuple[str, str]:
+    logger.info("Saving a keypair")
     uri = api_base_uri + '/create_keypair'
     keypair = oauth_request(oauth, uri, method='post').json()['create_keypair']['data']
     private_key = keypair['private_key']
