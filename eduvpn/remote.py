@@ -51,6 +51,7 @@ def oauth_request(oauth: OAuth2Session, uri: str, method: str = 'get'):
     """
     Do an oauth request and check if there are no issues
     """
+    logger.info("oauth_request")
     call = getattr(oauth, method)
     response = call(uri)
     if response.status_code != 200:
@@ -61,6 +62,7 @@ def oauth_request(oauth: OAuth2Session, uri: str, method: str = 'get'):
 
 
 def list_organisations(uri: str) -> List[Dict[str, Any]]:
+    logger.info("list_organisations")
     try:
         result = request(uri, verify=True)['organization_list']
     except Exception as e:
@@ -70,6 +72,7 @@ def list_organisations(uri: str) -> List[Dict[str, Any]]:
 
 
 def list_servers(uri: str) -> List[Dict[str, Any]]:
+    logger.info("list_servers")
     try:
         result = request(uri, verify=True)['server_list']
     except Exception as e:
@@ -79,6 +82,7 @@ def list_servers(uri: str) -> List[Dict[str, Any]]:
 
 
 def get_full_info(base_uri: str) -> Dict[str, Any]:
+    logger.info("get_full_info")
     if not base_uri.endswith('/'):
         base_uri += '/'
     uri = base_uri + 'info.json'
@@ -86,6 +90,7 @@ def get_full_info(base_uri: str) -> Dict[str, Any]:
 
 
 def get_info(base_uri: str):
+    logger.info("get_info")
     info = get_full_info(base_uri)
     api_base_uri = info['api_base_uri']
     token_endpoint = info['token_endpoint']
@@ -94,6 +99,7 @@ def get_info(base_uri: str):
 
 
 def get_config(oauth: OAuth2Session, base_uri: str, profile_id: str) -> str:
+    logger.info("get_config")
     uri = base_uri + f'/profile_config?profile_id={profile_id}'
     text = oauth_request(oauth, uri).text
     try:
@@ -111,6 +117,7 @@ def get_config(oauth: OAuth2Session, base_uri: str, profile_id: str) -> str:
 
 
 def list_profiles(oauth: OAuth2Session, api_base_uri: str):
+    logger.info("list_profiles")
     uri = api_base_uri + '/profile_list'
     return oauth_request(oauth, uri).json()['profile_list']['data']
 
@@ -125,11 +132,13 @@ def create_keypair(oauth: OAuth2Session, api_base_uri: str) -> Tuple[str, str]:
 
 
 def system_messages(oauth: OAuth2Session, api_base_uri: str):
+    logger.info("system_messages")
     uri = api_base_uri + '/system_messages'
     return oauth_request(oauth, uri).json()['system_messages']['data']
 
 
 def check_certificate(oauth: OAuth2Session, api_base_uri: str, certificate: str):
+    logger.info("check_certificate")
     common_name = common_name_from_cert(certificate.encode('ascii'))
     uri = api_base_uri + '/check_certificate?common_name=' + common_name
     return oauth_request(oauth, uri).json()['check_certificate']['data']['is_valid']
