@@ -136,9 +136,11 @@ def parse_letsconnect(args: List[str]):
 
 def eduvpn():
     logging.basicConfig(level=logging.INFO)
+    logger.info("EDUVPN")
     parse_eduvpn(argv[1:])
 
 
 def letsconnect():
     logging.basicConfig(level=logging.INFO)
+    logger.info("LETS CONNECT")
     parse_letsconnect(argv[1:])

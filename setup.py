@@ -56,7 +56,7 @@ for dir in glob('share/locale/*/LC_MESSAGES'):
     data_files.append([dir, glob(os.path.join(dir,'*.mo'))])
 
 setup(
-    name="eduvpn_client",
+    name="eduvpn_client_cowolff",
     version=__version__,
     packages=find_packages(),
     data_files=data_files,
@@ -70,7 +70,7 @@ setup(
     tests_require=tests_require,
     test_suite="tests",
     keywords="vpn openvpn networking security",
-    url="https://github.com/eduvpn/python-eduvpn-client",
+    url="https://github.com/corni3011/python-eduvpn-client",
     python_requires='>=3.6',
     classifiers=[
         "Development Status :: 5 - Production/Stable",
