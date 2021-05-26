@@ -38,6 +38,7 @@ def status(_):
     actions.status()
 
 
+# TO-DO: Implement for-loop for creating multiple certs
 def enroll(auth_url, display_name, support_contact, secure_internets, interactive: bool):
     api_url, oauth, token_endpoint, auth_endpoint = actions.fetch_token(auth_url)
 
