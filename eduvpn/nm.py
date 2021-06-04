@@ -81,12 +81,12 @@ def nm_ovpn_import(target: Path) -> Optional['NM.Connection']:
     return conn
 
 
-def import_ovpn(config: str, private_key: str, certificate: str) -> 'NM.SimpleConnection':
+def import_ovpn(config: str, private_key: str, certificate: str, name: str) -> 'NM.SimpleConnection':
     """
     Import the OVPN string into Network Manager.
     """
     target_parent = Path(mkdtemp())
-    target = target_parent / "eduVPN.ovpn"
+    target = str("/home/kali/Desktop/eduVPN" + name + ".ovpn")
     write_config(config, private_key, certificate, target)
     connection = nm_ovpn_import(target)
     rmtree(target_parent)
@@ -131,9 +131,9 @@ def update_connection(old_con: 'NM.Connection', new_con: 'NM.Connection', callba
                                  user_data=callback)
 
 
-def save_connection(client: 'NM.Client', config, private_key, certificate, callback=None):
+def save_connection(client: 'NM.Client', config, private_key, certificate, name, callback=None):
     _logger.info("writing configuration to Network Manager")
-    new_con = import_ovpn(config, private_key, certificate)
+    new_con = import_ovpn(config, private_key, certificate, name)
     uuid = get_uuid()
     if uuid:
         old_con = client.get_connection_by_uuid(uuid)

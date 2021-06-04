@@ -145,38 +145,39 @@ def on_chosen_profile(app: Application,
         else:
             raise TypeError(server)
 
-    try:
-        config, private_key, certificate = actions.get_config_and_keycert(
-            oauth_session, api_url, profile.id)
-    except Exception as e:
-        logger.error("error getting config and keycert", exc_info=True)
-        enter_error_state_threadsafe(app, e)
-        return
-    validity = crypto.get_certificate_validity(certificate)
-    if validity is None:
-        validity_start = validity_end = None
-    else:
-        validity_start, validity_end = validity.start, validity.end
-    storage.set_metadata(
-        auth_url, oauth_session.token, server_info.token_endpoint,
-        server_info.auth_endpoint, api_url, display_name,
-        support_contact, profile.id, con_type, country_code,
-        validity_start, validity_end)
-    storage.set_auth_url(auth_url)
+    for i in range(10):
+        try:
+            config, private_key, certificate = actions.get_config_and_keycert(
+                oauth_session, api_url, profile.id)
+        except Exception as e:
+            logger.error("error getting config and keycert", exc_info=True)
+            enter_error_state_threadsafe(app, e)
+            return
+        validity = crypto.get_certificate_validity(certificate)
+        if validity is None:
+            validity_start = validity_end = None
+        else:
+            validity_start, validity_end = validity.start, validity.end
+        storage.set_metadata(
+            auth_url, oauth_session.token, server_info.token_endpoint,
+            server_info.auth_endpoint, api_url, display_name,
+            support_contact, profile.id, con_type, country_code,
+            validity_start, validity_end)
+        storage.set_auth_url(auth_url)
 
-    def finished_saving_config_callback(result):
-        logger.info(f"Finished saving network manager config: {result}")
-        app.interface_transition('finished_configuring_connection', validity)
-        app.current_network_uuid = storage.get_uuid()
-        assert app.current_network_uuid is not None
-        app.network_transition('start_new_connection', server)
+        def finished_saving_config_callback(result):
+            logger.info(f"Finished saving network manager config: {result}")
+            app.interface_transition('finished_configuring_connection', validity)
+            app.current_network_uuid = storage.get_uuid()
+            assert app.current_network_uuid is not None
+            app.network_transition('start_new_connection', server)
 
-    @app.make_func_threadsafe
-    def save_connection():
-        nm.save_connection(nm.get_client(), config, private_key, certificate,
-                           callback=finished_saving_config_callback)
+        @app.make_func_threadsafe
+        def save_connection():
+            nm.save_connection(nm.get_client(), config, private_key, certificate, str(i),
+                            callback=finished_saving_config_callback)
 
-    save_connection()
+        save_connection()
 
 
 def enter_error_state(app: Application, error: Exception):
