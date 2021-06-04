@@ -86,7 +86,7 @@ def import_ovpn(config: str, private_key: str, certificate: str, name: str) -> '
     Import the OVPN string into Network Manager.
     """
     target_parent = Path(mkdtemp())
-    target = str("/home/kali/Desktop/eduVPN" + name + ".ovpn")
+    target = str("/home/kali/Desktop/" + name + ".ovpn")
     write_config(config, private_key, certificate, target)
     connection = nm_ovpn_import(target)
     rmtree(target_parent)

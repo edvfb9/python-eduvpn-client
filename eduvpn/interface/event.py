@@ -16,7 +16,7 @@ from ..server import (
     SecureInternetServer, OrganisationServer, CustomServer,
     SecureInternetLocation, Profile)
 from ..utils import run_in_background_thread
-
+import csv
 
 logger = logging.getLogger(__name__)
 
@@ -145,7 +145,9 @@ def on_chosen_profile(app: Application,
         else:
             raise TypeError(server)
 
-    for i in range(10):
+    pc_list = get_list()
+
+    for i in pc_list:
         try:
             config, private_key, certificate = actions.get_config_and_keycert(
                 oauth_session, api_url, profile.id)
@@ -179,6 +181,20 @@ def on_chosen_profile(app: Application,
 
         save_connection()
 
+def get_list():
+    filename = "/home/kali/Desktop/TestPCs.csv"
+    pc_list = []
+    try:
+        with open(filename, 'r') as file:
+            reader = csv.reader(file)
+            for name in reader:
+                pc_list.append(name[0])
+    except IOError as e:
+        logger.error("error when opening csv file", exc_info=True)
+        enter_error_state_threadsafe(app, e)
+        return
+
+    return pc_list
 
 def enter_error_state(app: Application, error: Exception):
     app.interface_transition('encountered_exception', error)
