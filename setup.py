@@ -56,7 +56,7 @@ for dir in glob('share/locale/*/LC_MESSAGES'):
     data_files.append([dir, glob(os.path.join(dir,'*.mo'))])
 
 setup(
-    name="eduvpn_client_cowolff",
+    name="eduvpn_client",
     version=__version__,
     packages=find_packages(),
     data_files=data_files,
